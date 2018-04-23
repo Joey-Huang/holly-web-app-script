@@ -11,7 +11,7 @@ const fs = require('fs');
 const chalk = require('chalk');
 const paths = require('../../config/paths');
 
-module.exports = (resolve, rootDir, isEjecting) => {
+module.exports = (resolve, rootDir) => {
   // Use this instead of `paths.testsSetup` to avoid putting
   // an absolute filename into configuration after ejecting.
   const setupTestsFile = fs.existsSync(paths.testsSetup)
@@ -21,47 +21,46 @@ module.exports = (resolve, rootDir, isEjecting) => {
   // TODO: I don't know if it's safe or not to just use / as path separator
   // in Jest configs. We need help from somebody with Windows to determine this.
   const config = {
-    collectCoverageFrom: ['src/**/*.{js,jsx,mjs,ts,tsx}'],
+    collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx}'],
     setupFiles: [resolve('config/polyfills.js')],
     setupTestFrameworkScriptFile: setupTestsFile,
     testMatch: [
-      '<rootDir>/src/**/__tests__/**/*.{js,jsx,mjs,ts,tsx}',
-      '<rootDir>/src/**/?(*.)(spec|test).{js,jsx,mjs,ts,tsx}',
+      '<rootDir>/src/**/__tests__/**/*.ts?(x)',
+      '<rootDir>/src/**/?(*.)(spec|test).ts?(x)',
     ],
     testEnvironment: 'node',
     testURL: 'http://localhost',
     transform: {
-      '^.+\\.(js|jsx|mjs)$': isEjecting
-        ? '<rootDir>/node_modules/babel-jest'
-        : resolve('config/jest/babelTransform.js'),
-      '^.+\\.css$': resolve('config/jest/cssTransform.js'),
       '^.+\\.tsx?$': resolve('config/jest/typescriptTransform.js'),
+      '^.+\\.css$': resolve('config/jest/cssTransform.js'),
       '^(?!.*\\.(js|jsx|mjs|css|json)$)': resolve(
         'config/jest/fileTransform.js'
       ),
     },
-    transformIgnorePatterns: ['[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx|mjs)$'],
+    transformIgnorePatterns: [
+      '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|ts|tsx)$'
+    ],
     moduleNameMapper: {
       '^react-native$': 'react-native-web',
     },
     moduleFileExtensions: [
-      'web.js',
       'mjs',
-      'js',
-      'json',
-      'web.jsx',
-      'jsx',
-      'node',
       'web.ts',
       'ts',
       'web.tsx',
-      'tsx'
+      'tsx',
+      'web.js',
+      'js',
+      'web.jsx',
+      'jsx',
+      'json',
+      'node',
     ],
     globals: {
       'ts-jest': {
         tsConfigFile: paths.appTsTestConfig,
       },
-    }
+    },
   };
   if (rootDir) {
     config.rootDir = rootDir;

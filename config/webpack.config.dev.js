@@ -19,6 +19,7 @@ const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const getClientEnvironment = require('./env');
 const paths = require('./paths');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
@@ -90,7 +91,18 @@ module.exports = {
         // https://github.com/facebookincubator/create-react-app/issues/290
         // `web` extension prefixes have been added for better support
         // for React Native Web.
-        extensions: ['.web.ts', '.ts', '.web.tsx', '.tsx', '.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
+        extensions: [
+            '.mjs',
+            '.web.ts',
+            '.ts',
+            '.web.tsx',
+            '.tsx',
+            '.web.js',
+            '.js',
+            '.json',
+            '.web.jsx',
+            '.jsx',
+        ],
         alias: {
             // @remove-on-eject-begin
             // Resolve Babel runtime relative to react-scripts.
@@ -112,6 +124,7 @@ module.exports = {
             // please link the files into your node_modules/ and let module-resolution kick in.
             // Make sure your source files are compiled, as they will not be processed in any way.
             new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
+            new TsconfigPathsPlugin({configFile: paths.appTsConfig})
         ],
     },
     module: {
@@ -122,7 +135,7 @@ module.exports = {
             // { parser: { requireEnsure: false } },
 
             {
-                test: /\.js$/,
+                test: /\.(js|jsx|mjs)$/,
                 loader: require.resolve('source-map-loader'),
                 enforce: 'pre',
                 include: paths.appSrc,
@@ -156,22 +169,6 @@ module.exports = {
                                 },
                             },
                         ],
-                    },
-                    // Process JS with Babel.
-                    {
-                        test: /\.(js|jsx|mjs)$/,
-                        include: paths.appSrc,
-                        loader: require.resolve('babel-loader'),
-                        options: {
-                            // @remove-on-eject-begin
-                            babelrc: false,
-                            presets: [require.resolve('babel-preset-react-app')],
-                            // @remove-on-eject-end
-                            // This is a feature of `babel-loader` for webpack (not Babel itself).
-                            // It enables caching results in ./node_modules/.cache/babel-loader/
-                            // directory for faster rebuilds.
-                            cacheDirectory: true,
-                        },
                     },
                     // "postcss" loader applies autoprefixer to our CSS.
                     // "css" loader resolves paths in CSS and adds assets as dependencies.

@@ -34,8 +34,7 @@ const printHostingInstructions = require('react-dev-utils/printHostingInstructio
 const FileSizeReporter = require('react-dev-utils/FileSizeReporter');
 const printBuildError = require('react-dev-utils/printBuildError');
 
-const measureFileSizesBeforeBuild =
-  FileSizeReporter.measureFileSizesBeforeBuild;
+const measureFileSizesBeforeBuild = FileSizeReporter.measureFileSizesBeforeBuild;
 const printFileSizesAfterBuild = FileSizeReporter.printFileSizesAfterBuild;
 const useYarn = fs.existsSync(paths.yarnLockFile);
 
@@ -72,7 +71,7 @@ measureFileSizesBeforeBuild(paths.appBuild)
         );
         console.log(
           'To ignore, add ' +
-            chalk.cyan('// tslint-disable-next-line') +
+            chalk.cyan('// eslint-disable-next-line') +
             ' to the line before.\n'
         );
       } else {
